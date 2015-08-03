@@ -1,2 +1,7 @@
 *.ppm
 *.pgm
+*.ini
+*.classpath
+*.prefs
+*.project
+*.settings
