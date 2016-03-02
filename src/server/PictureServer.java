@@ -3,6 +3,8 @@ package server;
 import java.io.IOException;
 import java.net.ServerSocket;
 
+import client.MultiClient;
+
 public class PictureServer {
 
 	public static void main(String args[]) throws IOException {

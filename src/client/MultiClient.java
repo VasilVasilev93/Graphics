@@ -1,4 +1,4 @@
-package server;
+package client;
 
 import java.awt.Graphics;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 
 import shapes.Circle;
 import shapes.Ellipse;
-import shapes.Figures;
+import shapes.Figure;
 import shapes.Picture;
 import shapes.Square;
 
@@ -34,7 +34,7 @@ public class MultiClient extends Thread {
 		MultiClient.graphics = graphics;
 	}
 
-	private Map<Integer, Figures> dictionary = new HashMap<Integer, Figures>();
+	private Map<Integer, Figure> dictionary = new HashMap<Integer, Figure>();
 
 	public MultiClient(Socket socket, int clientNumber) {
 		this.socket = socket;
@@ -56,9 +56,9 @@ public class MultiClient extends Thread {
 			frame.setVisible(true);
 			graphics = frame.getGraphics();
 			
-			Figures shape = dictionary.get(clientChoice);
+			Figure shape = dictionary.get(clientChoice);
 			shape.draw(input);
-			
+			input.close();
 
 		} catch (IOException e) {
 			System.out.println("Failed to read from stream");

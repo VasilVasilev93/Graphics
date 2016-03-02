@@ -6,8 +6,6 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import server.MultiClient;
-
 public class ImageClient {
 
 	public static void main(String args[]) throws UnknownHostException, IOException {
@@ -19,15 +17,13 @@ public class ImageClient {
 	public ImageClient(Socket s) throws IOException {
 		//MUCH BETTER
 		OutputStream output = s.getOutputStream();
-		OutputStream copy = output;
 		ClientInterface newInterface = ClientInterface.getInstance();
 		newInterface.setFrameText("Image Client");
 		newInterface.setFrameSize(400, 400);
-		newInterface.addListener(newInterface.createButton("Send Image", BorderLayout.EAST), copy, MultiClient.IMAGE);
-		newInterface.addListener(newInterface.createButton("Draw Circle", BorderLayout.NORTH), copy, MultiClient.CIRCLE);
-		newInterface.addListener(newInterface.createButton("Draw Square", BorderLayout.SOUTH), copy, MultiClient.SQUARE);
-		newInterface.addListener(newInterface.createButton("Draw Ellipse", BorderLayout.WEST), copy, MultiClient.ELLIPSE);
-		output = copy;
+		newInterface.addListener(newInterface.createButton("Send Image", BorderLayout.EAST), output, MultiClient.IMAGE);
+		newInterface.addListener(newInterface.createButton("Draw Circle", BorderLayout.NORTH), output, MultiClient.CIRCLE);
+		newInterface.addListener(newInterface.createButton("Draw Square", BorderLayout.SOUTH), output, MultiClient.SQUARE);
+		newInterface.addListener(newInterface.createButton("Draw Ellipse", BorderLayout.WEST), output, MultiClient.ELLIPSE);
 		
 		
 		

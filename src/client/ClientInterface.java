@@ -16,7 +16,6 @@ import algorithms.Algorithms;
 import images.Image;
 import images.Pgm;
 import images.Ppm;
-import server.MultiClient;
 
 public class ClientInterface {
 	private String frameText = null;
@@ -96,41 +95,8 @@ public class ClientInterface {
 					output.write(coordY);
 					switch (type) {
 					case MultiClient.IMAGE:
-						final JFileChooser fc = new JFileChooser();
-						int returnVal = fc.showOpenDialog(Frame);
-						
-						String algorithmChoice = (String) JOptionPane.showInputDialog(null, "Choose algorithm", "Image algorithms", JOptionPane.QUESTION_MESSAGE, null,
-						        Algorithms.getAlgorithms(), null);
-						//output.write(algorithmChoice);
-						for(int i = 0; i <  Algorithms.getAlgorithms().length; i ++){
-							if ( Algorithms.getAlgorithms()[i] == algorithmChoice){
-								output.write(i);
-							}
-						}
-						if(returnVal == JFileChooser.APPROVE_OPTION){
-							String name = fc.getSelectedFile().getName();
-							Image image = null;
-							if(name.endsWith("pgm")){
-								image = new Pgm();
-								output.write(0);
-							}
-							else if(name.endsWith("ppm")){
-								image = new Ppm();
-								output.write(1);
-							}
-							
-							File file = new File(fc.getSelectedFile().getPath());
-							FileInputStream input = null;
-							input = new FileInputStream(file);
-							image.read(input);
-							image.write(output);
-						}
-						else{
-							System.out.println("No file was selected.");
-							return;
-						}
+						requestImage(output);
 						break;
-
 					case MultiClient.SQUARE:
 						param = Integer.parseInt(JOptionPane.showInputDialog("Enter side: "));
 						break;
@@ -160,6 +126,54 @@ public class ClientInterface {
 
 		});
 
+	}
+	
+	public void requestImage(OutputStream output) throws IOException{
+		final JFileChooser fc = new JFileChooser();
+		int returnVal = fc.showOpenDialog(Frame);
+		chooseAlgorithm(output);
+		
+		chooseFile(output, returnVal, fc);
+	}
+	
+	public void chooseAlgorithm(OutputStream output) throws IOException{
+		String algorithmChoice = (String) JOptionPane.showInputDialog(null, "Choose algorithm", "Image algorithms", JOptionPane.QUESTION_MESSAGE, null,
+		        Algorithms.getAlgorithms(), null);
+		if(algorithmChoice == null){
+			output.write(0);
+		}
+		else {
+			for(int i = 0; i <  Algorithms.getAlgorithms().length; i ++){
+				if ( Algorithms.getAlgorithms()[i] == algorithmChoice){
+					output.write(i + 1);
+				}
+			}
+		}
+	}
+	
+	public void chooseFile(OutputStream output, int returnVal, JFileChooser fc) throws IOException{
+		if(returnVal == JFileChooser.APPROVE_OPTION){
+			String name = fc.getSelectedFile().getName();
+			Image image = null;
+			if(name.endsWith("pgm")){
+				image = new Pgm();
+				output.write(0);
+			}
+			else if(name.endsWith("ppm")){
+				image = new Ppm();
+				output.write(1);
+			}
+			
+			File file = new File(fc.getSelectedFile().getPath());
+			FileInputStream input = null;
+			input = new FileInputStream(file);
+			image.read(input);
+			image.write(output);
+		}
+		else{
+			System.out.println("No file was selected.");
+			return;
+		}
 	}
 
 }

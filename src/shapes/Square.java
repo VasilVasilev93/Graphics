@@ -1,19 +1,15 @@
 package shapes;
 
 import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 
-import server.MultiClient;
+import client.MultiClient;
 
-public class Square extends Figures {
+public class Square extends Figure {
 	private int coordY = 0;
 	private int color = 0;
 	private Color c = null;
-	private Point a = null;
-	private Point a1 = null;
 	private int side = 0;
 	private int fill = 0;
 
@@ -23,7 +19,7 @@ public class Square extends Figures {
 		coordY = input.read();
 		side = input.read();
 		color = input.read();
-		fill = input.read();
+		//fill = input.read();
 
 		c = new Color(color);
 		MultiClient.getGraphics().setColor(c);

@@ -2,13 +2,15 @@ package algorithms;
 
 import images.Image;
 import images.Pgm;
+import images.Ppm;
 import pixel.PgmPixelColor;
 import pixel.PixelColor;
 import pixel.PpmPixelColor;
 
 public class Algorithms {
 
-	private static final String[] algorithms = {"meanFilter", "medianFilter", "binarize"};
+	private static final String[] algorithms = { "meanFilter", "medianFilter", "binarize" };
+
 	public static void meanFilter(Image src, Image dest) {
 		PixelColor sum = src.getEmptyColor();
 		for (int countY = 1; countY < src.getHeight() - 1; countY++)
@@ -77,31 +79,83 @@ public class Algorithms {
 		for (int y = 1; y < src.getHeight() - 1; y++) {
 			for (int x = 1; x < src.getWidth() - 1; x++) {
 				PixelColor[] colors = new PixelColor[9];
-				for(int i = 0; i < 9; i++){
+				for (int i = 0; i < 9; i++) {
 					colors[i] = src.getEmptyColor();
 				}
 				PixelColor c = null;
-				for (int iNeighb = 0; iNeighb < 9; iNeighb ++) {
+				for (int iNeighb = 0; iNeighb < 9; iNeighb++) {
 					c = src.getPixelColor(y + (iNeighb % 3) - 1, x + (iNeighb / 3) - 1);
-					if(c instanceof PpmPixelColor){
+					if (c instanceof PpmPixelColor) {
 						((PpmPixelColor) colors[iNeighb]).setRed(((PpmPixelColor) c).getRed());
 						((PpmPixelColor) colors[iNeighb]).setGreen(((PpmPixelColor) c).getGreen());
 						((PpmPixelColor) colors[iNeighb]).setBlue(((PpmPixelColor) c).getBlue());
-					}
-					else{
+					} else {
 						((PgmPixelColor) colors[iNeighb]).setColor(((PgmPixelColor) c).getColor());
 					}
-					
+
 				}
-				if(colors[0] instanceof PpmPixelColor){
+				if (colors[0] instanceof PpmPixelColor) {
 					PpmPixelColor.sort(colors);
-				}
-				else if (colors[0] instanceof PgmPixelColor){
+				} else if (colors[0] instanceof PgmPixelColor) {
 					PgmPixelColor.sort(colors);
 				}
 				dest.setPixelColor(y, x, colors[colors.length / 2]);
 			}
 		}
+	}
+
+	public static void binarize(Ppm src, Ppm dest, int neighb, int delta, int w, int h) {
+		if (neighb % 2 == 0) {
+			throw new IllegalArgumentException("Neighbours must be odd number");
+		}
+		if (neighb < 3) {
+			throw new IllegalArgumentException("Neighbours must be at least 9");
+		}
+
+		PpmPixelColor sum = (PpmPixelColor) src.getEmptyColor();
+		PpmPixelColor black = new PpmPixelColor();
+		black.setRed(0);
+		black.setGreen(0);
+		black.setBlue(0);
+		PpmPixelColor white = new PpmPixelColor();
+		white.setRed(255);
+		white.setGreen(255);
+		white.setBlue(255);
+
+		int neighbSize = neighb * neighb;
+
+		for (int countY = neighb / 2; countY < Math.min(src.getHeight() - neighb / 2,
+				h + neighb / 2); countY++)
+			for (int countX = neighb / 2; countX < Math.min(src.getWidth() - neighb / 2,
+					w + neighb / 2); countX++) {
+				sum.sub(sum); // zero sum
+
+				/*
+				 * for (int iNeighb = 0; iNeighb < neighbSize; iNeighb++) {
+				 * PgmPixelColor c = (PgmPixelColor) src.getPixelColor( countY +
+				 * (iNeighb % neighb) - ((neighb - 1) / 2), countX + (iNeighb /
+				 * neighb) - ((neighb - 1) / 2)); sum.add(c); }
+				 */
+
+				for (int yNeighb = 0; yNeighb < neighb; yNeighb++) {
+					for (int xNeighb = 0; xNeighb < neighb; xNeighb++) {
+						PpmPixelColor c = (PpmPixelColor) src.getPixelColor(countY + yNeighb - ((neighb - 1) / 2),
+								countX + xNeighb - ((neighb - 1) / 2));
+						sum.add(c);
+					}
+				}
+
+				sum.div(neighbSize);
+
+				if ((((PpmPixelColor) src.getPixelColor(countY, countX)).getRed()) < delta + sum.getRed()
+						&& (((PpmPixelColor) src.getPixelColor(countY, countX)).getGreen()) < delta + sum.getGreen()
+						&& (((PpmPixelColor) src.getPixelColor(countY, countX)).getBlue()) < delta + sum.getBlue()) {
+					dest.setPixelColor(countY, countX, black);
+				} else {	
+					dest.setPixelColor(countY, countX, white);
+				}
+			}
+
 	}
 
 	public static String[] getAlgorithms() {

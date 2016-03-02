@@ -1,13 +1,14 @@
 package shapes;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 
-import server.MultiClient;
+import client.MultiClient;
 
-public class Ellipse extends Figures {
+public class Ellipse extends Figure {
 
-	private int majorAxis = 0, minorAxis = 0;
+	private int majorAxis = 0, minorAxis = 0, color = 0;
 
 	@Override
 	public void draw(InputStream input) throws IOException {
@@ -16,7 +17,7 @@ public class Ellipse extends Figures {
 		coordY = input.read();
 		minorAxis = input.read();
 		majorAxis = input.read();
-		input.read();
+		color = input.read();
 
 		Point F = new Point();
 		Point G = new Point();
@@ -42,6 +43,7 @@ public class Ellipse extends Figures {
 
 		G.setX(C.getX() - dist);
 		G.setY(C.getY());
+		//MultiClient.getGraphics().setColor(new Color(color));
 
 		for (int countX = 0; countX < majorAxis; countX++) {
 			for (int countY = 0; countY < minorAxis; countY++) {
@@ -50,7 +52,6 @@ public class Ellipse extends Figures {
 				P1 = P.symetricX(minorAxis);
 				P2 = P.symetricY(minorAxis);
 				P3 = P2.symetricX(minorAxis);
-				input.read();
 
 				// not finished yet
 				if (Math.sqrt(P.distance(F)) + Math.sqrt(P.distance(G)) <= majorAxis) {

@@ -1,6 +1,7 @@
 package graphics;
 
 import java.io.IOException;
+import java.util.Random;
 
 public class GraphTest extends Thread {
 
@@ -112,11 +113,13 @@ public class GraphTest extends Thread {
 		// System.out.println("Milliseconds: " + (System.currentTimeMillis() -
 		// currentTimeMillis));*/
 		// test2.write("/tmp4/test3.pgm");
+		
+		/*
 
-		/*Image test1 = new Pgm();
-		Image test2 = new Pgm();
+		Image test1 = new Ppm();
+		Image test2 = new Ppm();
 
-		test1.read(new FileInputStream("src/text.pgm"));
+		test1.read(new FileInputStream("src/random.ppm"));
 
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		test1.write(bos);
@@ -126,24 +129,27 @@ public class GraphTest extends Thread {
 		Algorithms.meanFilter(test1, test2);
 
 		// dest.flush();
-		Algorithms.binarize((Pgm)test1, (Pgm)test2, 11, -3, 25, 25, test1.getWidth(), test2.getWidth());
+		Algorithms.binarize((Ppm)test1, (Ppm)test2, 3, -2, test1.getWidth(), test2.getHeight());
 		test2.write(new FileOutputStream("/tmp/apple.ppm"));
 
-		System.out.print("Ok");*/
+		System.out.print("Ok");
 
+		*/
+		long x = 0, y = 0;
+		int c1 = 0, c2 = 0;
 		
-		int x = 0, y = 0, c1 = 0, c2 = 0;
+		Random r = new Random();
 		
 		for(int i = 0; i < 1000000; i++){ 
-			x = (int) (Math.random() * 100);
-			y = (int) (Math.random() * 100);
+			x = r.nextLong() % 100000L;
+			y = r.nextLong() % 100000L;
 			c1 ++;
-			if(Math.sqrt(x * x + y * y) <= 100){
+			if(x * x + y * y < 10000000000L){
 				c2 ++; 
 				} 
 			}
 		 
-		System.out.println(3.95 * ((double) c2 / (double) c1));
+		System.out.println(4 * ((double) c2 / (double) c1));
 	}
 
 }
